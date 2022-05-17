@@ -208,13 +208,13 @@ class snirf_quality_report():
 				                sci_tsv.append('')
 				                pp_tsv.append('')
 				
-				channels_df['scalp_coupling_index'] = sci_tsv
-				channels_df['peak_power'] = pp_tsv
-				
-				channel_filename = os.path.split(channels_path)[1]
-				channel_tsv_path_to_save = os.path.join(report_dir,channel_filename)
-				print(channel_filename)
-				print(channel_tsv_path_to_save)
-				channels_df.to_csv(channel_tsv_path_to_save, sep="\t")
+						channels_df['scalp_coupling_index'] = sci_tsv
+						channels_df['peak_power'] = pp_tsv
+						
+						channel_filename = os.path.split(channels_path)[1]
+						channel_tsv_path_to_save = os.path.join(report_dir,channel_filename)
+						print(channel_filename)
+						print(channel_tsv_path_to_save)
+						channels_df.to_csv(channel_tsv_path_to_save, sep="\t")
 					
 		# plt.close()
