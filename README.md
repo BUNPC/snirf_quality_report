@@ -11,7 +11,7 @@ Saves quality_report.html and updated channles file in derivatives folder.
 ```
 from snirf_quality_report.snirf_quality_report import snirf_quality_report
 
-snirf_path = 'path_to_the_snirf_file_in_BIDS_folder'
+snirf_path = 'path_to_the_snirf_file_insie_a_BIDS_folder'
 obj = snirf_quality_report()
 obj.run_report(snirf_path)
  
