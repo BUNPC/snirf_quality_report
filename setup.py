@@ -11,7 +11,7 @@ from shutil import rmtree
 
 from setuptools import find_packages, setup, Command
 # from snirf2bids.__version__ import __version__ as VERSION
-VERSION = '0.0.3'
+VERSION = '0.0.4'
 # Package meta-data.
 NAME = 'snirf_quality_report'
 DESCRIPTION = 'Get fNIRS SNIRF raw data quality report'
