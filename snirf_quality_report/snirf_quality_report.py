@@ -175,9 +175,9 @@ class snirf_quality_report():
 				norm_path = os.path.normpath(snirf_path)
 				all_dirs = norm_path.split(os.sep)
 				if all_dirs[return_idx+1].startswith('ses-'):
-					report_dir = os.path.join(*all_dirs[:return_idx],'derivatives',all_dirs[return_idx],all_dirs[return_idx+1])
+					report_dir = os.path.join(*all_dirs[:return_idx],'derivatives',all_dirs[return_idx],all_dirs[return_idx+1],'report')
 				else:
-					report_dir = os.path.join(*all_dirs[:return_idx],'derivatives',all_dirs[return_idx])
+					report_dir = os.path.join(*all_dirs[:return_idx],'derivatives',all_dirs[return_idx],'report')
 					
 				report_dir = Path('/'+report_dir)
 
