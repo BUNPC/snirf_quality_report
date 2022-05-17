@@ -179,7 +179,7 @@ class snirf_quality_report():
 				else:
 					report_dir = os.path.join('',*all_dirs[:return_idx],'derivatives',all_dirs[return_idx])
 					
-				report_dir = Path('/'+report_dir)
+				report_dir = os.path.abspath(report_dir)
 
 				print(report_dir)
 
