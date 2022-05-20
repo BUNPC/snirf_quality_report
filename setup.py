@@ -11,7 +11,7 @@ from shutil import rmtree
 
 from setuptools import find_packages, setup, Command
 # from snirf2bids.__version__ import __version__ as VERSION
-VERSION = '0.0.10'
+VERSION = '0.0.9'
 # Package meta-data.
 NAME = 'snirf_quality_report'
 DESCRIPTION = 'Get fNIRS SNIRF raw data quality report'
@@ -128,7 +128,7 @@ setup(
         'License :: OSI Approved :: MIT License',
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7.7',
         'Programming Language :: Python :: Implementation :: CPython',
         'Programming Language :: Python :: Implementation :: PyPy'
     ],
