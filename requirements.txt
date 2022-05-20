@@ -19,7 +19,7 @@ mne==1.0.3
 mne-nirs==0.2.1
 nibabel==3.2.2
 nilearn==0.9.1
-numpy==1.22.3
+numpy==1.19.5
 packaging==21.3
 pandas==1.4.2
 Pillow==9.1.1
