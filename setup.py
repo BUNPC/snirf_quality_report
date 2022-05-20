@@ -18,7 +18,7 @@ DESCRIPTION = 'Get fNIRS SNIRF raw data quality report'
 URL = 'https://github.com/BUNPC/snirf_quality_report'
 EMAIL = 'skura@bu.edu'
 AUTHOR = 'SK'
-REQUIRES_PYTHON = '>=3.6.0'
+REQUIRES_PYTHON = '>=3.7.7'
 
 about = {}
 about['__version__'] = VERSION
