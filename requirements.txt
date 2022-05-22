@@ -34,7 +34,7 @@ scikit-learn==1.0.2
 scipy==1.7.3
 seaborn==0.11.2
 six==1.16.0
-snirf-quality-report==0.0.10
+snirf-quality-report==0.0.11
 termcolor==1.1.0
 threadpoolctl==3.1.0
 tqdm==4.64.0
