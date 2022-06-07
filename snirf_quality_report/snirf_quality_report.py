@@ -17,6 +17,7 @@ from mne.preprocessing.nirs import optical_density
 from mne_nirs.preprocessing import peak_power, scalp_coupling_index_windowed
 from mne_nirs.visualisation import plot_timechannel_quality_metric
 
+
 class snirf_quality_report():
 
 	def plot_raw(self, raw, report):
@@ -27,7 +28,7 @@ class snirf_quality_report():
 
 	    msg = "Plot of the raw signal"
 	    report.add_figure(fig=fig1, caption=msg, title="Raw Waveform")
-	    plt.close()
+	    # plt.close()
 
 	    return raw, report
 
@@ -36,10 +37,11 @@ class snirf_quality_report():
 
 	    events, event_dict = mne.events_from_annotations(raw, verbose=False)
 	    print('before fig')
-	    fig2 = mne.viz.plot_events(events, event_id=event_dict,sfreq=raw.info['sfreq'])
+	    fig2 = mne.viz.plot_events(
+	        events, event_id=event_dict, sfreq=raw.info['sfreq'])
 	    print('after fig')
 	    report.add_figure(fig=fig2, title="Triggers")
-	    plt.close()
+	    # plt.close()
 
 	    return raw, report
 
@@ -54,9 +56,8 @@ class snirf_quality_report():
 
 	    msg = "PSD of the optical density signal."
 	    report.add_figure(fig=fig, title="OD PSD", caption=msg)
-	    plt.close()
+	    # plt.close()
 	    return raw, report
-
 
 	def summarise_sci_window(self, raw, report, threshold=0.8):
 	#     logger.debug("    Creating windowed SCI summary")
@@ -69,14 +70,15 @@ class snirf_quality_report():
 	        h_freq = 1.5
 	        h_trans_bandwidth = 0.3
 
-
-	    _, scores, times = scalp_coupling_index_windowed(raw, time_window=60, h_freq=h_freq, h_trans_bandwidth=h_trans_bandwidth)
+	    _, scores, times = scalp_coupling_index_windowed(
+	        raw, time_window=60, h_freq=h_freq, h_trans_bandwidth=h_trans_bandwidth)
 	    fig = plot_timechannel_quality_metric(raw, scores, times,
 	                                          threshold=threshold,
 	                                          title="Scalp Coupling Index "
 	                                          "Quality Evaluation")
 	    msg = "Windowed SCI."
 	    report.add_figure(fig=fig, title="SCI Windowed", caption=msg)
+	    # plt.close()
 
 	    return raw, report
 
@@ -91,13 +93,15 @@ class snirf_quality_report():
 	        h_freq = 1.5
 	        h_trans_bandwidth = 0.3
 
-	    _, scores, times = peak_power(raw, time_window=10, h_freq=h_freq, h_trans_bandwidth=h_trans_bandwidth)
+	    _, scores, times = peak_power(
+	        raw, time_window=10, h_freq=h_freq, h_trans_bandwidth=h_trans_bandwidth)
 	    fig = plot_timechannel_quality_metric(raw, scores, times,
 	                                          threshold=threshold,
 	                                          title="Peak Power "
 	                                          "Quality Evaluation")
 	    msg = "Windowed Peak Power."
 	    report.add_figure(fig=fig, title="Peak Power", caption=msg)
+	    # plt.close()
 
 	    return raw, report
 
@@ -112,7 +116,8 @@ class snirf_quality_report():
 	        h_freq = 1.5
 	        h_trans_bandwidth = 0.3
 
-	    sci = mne.preprocessing.nirs.scalp_coupling_index(raw, h_freq=h_freq, h_trans_bandwidth=h_trans_bandwidth)
+	    sci = mne.preprocessing.nirs.scalp_coupling_index(
+	        raw, h_freq=h_freq, h_trans_bandwidth=h_trans_bandwidth)
 	    raw.info['bads'] = list(compress(raw.ch_names, sci < threshold))
 
 	    fig, ax = plt.subplots()
@@ -123,6 +128,7 @@ class snirf_quality_report():
 	    msg = f"Scalp coupling index with threshold at {threshold}." \
 	          f"Results in bad channels {raw.info['bads']}"
 	    report.add_figure(fig=fig, caption=msg, title="Scalp Coupling Index")
+	    # plt.close()
 
 	    return raw, report, sci
 
@@ -132,6 +138,7 @@ class snirf_quality_report():
 	    msg = f"Montage of sensors." \
 	          f"Bad channels are marked in red: {raw.info['bads']}"
 	    report.add_figure(fig=fig3, title="Montage", caption=msg)
+	    # plt.close()
 
 	    return raw, report
 
@@ -147,7 +154,7 @@ class snirf_quality_report():
 
 		return return_idx
 
-	def run_report(self, snirf_path = None, path_to_save_report = None, filename_to_save = None):
+	def run_report(self, snirf_path=None, path_to_save_report=None, filename_to_save=None):
 
 		if snirf_path is None:
 			return 'Please pass path to the snirf file'
@@ -167,54 +174,45 @@ class snirf_quality_report():
 				if filename_to_save:
 					filename_and_path = os.path.join(path_to_save_report, filename_to_save)
 				else:
-					filename_and_path = os.path.join(path_to_save_report, 'quality_report.html')
+					filename_and_path = os.path.join(
+					    path_to_save_report, 'quality_report.html')
 				report.save(filename_and_path, overwrite=True, open_browser=False)
 		else:
 			return_idx = self.is_valid_bids_path_for_snirf_file(snirf_path)
-			if return_idx!= 0:
+			if return_idx != 0:
 				norm_path = os.path.normpath(snirf_path)
 				all_dirs = norm_path.split(os.sep)
 				if all_dirs[return_idx+1].startswith('ses-'):
-					report_dir = os.path.join(*all_dirs[:return_idx],'derivatives',all_dirs[return_idx],all_dirs[return_idx+1],'report')
+					report_dir = os.path.join(
+					    *all_dirs[:return_idx], 'derivatives', all_dirs[return_idx], all_dirs[return_idx+1], 'report')
 				else:
-					report_dir = os.path.join(*all_dirs[:return_idx],'derivatives',all_dirs[return_idx],'report')
-					
-				report_dir = Path('/'+report_dir)
+					report_dir = os.path.join(
+					    *all_dirs[:return_idx], 'derivatives', all_dirs[return_idx], 'report')
 
-				# print(report_dir)
+				report_dir = Path('/'+report_dir)
 
 				if not os.path.isdir(report_dir):
 					os.makedirs(report_dir)
-			
-				report_path = os.path.join(report_dir,'quality_report.html')
+
+				print(all_dirs[-1])
+				quality_report_name = all_dirs[-1].replace('_nirs.snirf','_dqr.html')
+				report_path = os.path.join(report_dir, quality_report_name)
 				report.save(report_path, overwrite=True, open_browser=False)
-				
+
 				channels_path = snirf_path.replace('_nirs.snirf', '_channels.tsv')
 				channels_path_ext = os.path.splitext(channels_path)[-1].lower()
-				if os.path.isfile(channels_path) and channels_path_ext=='.tsv':
+				if os.path.isfile(channels_path) and channels_path_ext == '.tsv':
 				    channels_df = pd.read_csv(channels_path, sep='\t')
 				    if 'name' in channels_df.keys():
 				        channel_names = channels_df['name']
-				        sci_tsv = []
-				        pp_tsv = []
-				        
-				        for channel_name in channel_names:
-				            if channel_name in raw.ch_names:
-				                idx = raw.ch_names.index(channel_name)
-				                sci_tsv.append(sci[idx])
-				                pp_tsv.append('')
-				
-				            else:
-				                sci_tsv.append('')
-				                pp_tsv.append('')
-				
-				        channels_df['scalp_coupling_index'] = sci_tsv
-				        channels_df['peak_power'] = pp_tsv
-				
+				        if channels_df.shape[0] >= len(raw.ch_names):
+				        	sci = sci.tolist()
+				        	sci.extend(['']*(channels_df.shape[0]-len(raw.ch_names)))
+				        	pp = ['']*channels_df.shape[0]
+				        	channels_df['scalp_coupling_index'] = sci
+				        	channels_df['peak_power'] = pp
 				        channel_filename = os.path.split(channels_path)[1]
 				        channel_tsv_path_to_save = os.path.join(report_dir,channel_filename)
-				        print(channel_filename)
-				        print(channel_tsv_path_to_save)
 				        channels_df.to_csv(channel_tsv_path_to_save, sep="\t")
-					
+
 		# plt.close()
