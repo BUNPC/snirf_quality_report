@@ -213,6 +213,6 @@ class snirf_quality_report():
 				        	channels_df['peak_power'] = pp
 				        channel_filename = os.path.split(channels_path)[1]
 				        channel_tsv_path_to_save = os.path.join(report_dir,channel_filename)
-				        channels_df.to_csv(channel_tsv_path_to_save, sep="\t")
+				        channels_df.to_csv(channel_tsv_path_to_save, sep="\t", index=False)
 
 		# plt.close()
