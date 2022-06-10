@@ -11,14 +11,14 @@ from shutil import rmtree
 
 from setuptools import find_packages, setup, Command
 # from snirf2bids.__version__ import __version__ as VERSION
-VERSION = '0.0.11'
+VERSION = '0.0.13'
 # Package meta-data.
 NAME = 'snirf_quality_report'
 DESCRIPTION = 'Get fNIRS SNIRF raw data quality report'
 URL = 'https://github.com/BUNPC/snirf_quality_report'
 EMAIL = 'skura@bu.edu'
 AUTHOR = 'SK'
-REQUIRES_PYTHON = '>=3.7.7'
+REQUIRES_PYTHON = '>=3.7.5'
 
 about = {}
 about['__version__'] = VERSION
