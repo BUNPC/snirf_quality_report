@@ -218,10 +218,6 @@ class snirf_quality_report():
 				        	sci_median.extend(['']*(channels_df.shape[0]-len(raw.ch_names)))
 				        	psp_median = (np.median(psp_dist, axis = 1)).tolist()
 				        	psp_median.extend(['']*(channels_df.shape[0]-len(raw.ch_names)))
-				        	sci_fifth_percentile = (np.percentile(sci_dist, 5, axis = 1)).tolist()
-				        	sci_fifth_percentile.extend(['']*(channels_df.shape[0]-len(raw.ch_names)))
-				        	psp_fifth_percentile = (np.percentile(psp_dist, 5, axis = 1)).tolist()
-				        	psp_fifth_percentile.extend(['']*(channels_df.shape[0]-len(raw.ch_names)))
 				        	sci_binary = sci_dist >= 0.6
 				        	sci_good_percent = (np.sum(sci_binary, axis=1)/sci_dist.shape[1]).tolist()
 				        	sci_good_percent.extend(['']*(channels_df.shape[0]-len(raw.ch_names)))
@@ -231,8 +227,6 @@ class snirf_quality_report():
 
 				        	channels_df['sci_median'] = self.truncate_float_decimal(sci_median)
 				        	channels_df['psp_median'] = self.truncate_float_decimal(psp_median)
-				        	channels_df['sci_fifth_percentile'] = self.truncate_float_decimal(sci_fifth_percentile)
-				        	channels_df['psp_fifth_percentile'] = self.truncate_float_decimal(psp_fifth_percentile)
 				        	channels_df['sci_good_quality_percent'] = self.truncate_float_decimal(sci_good_percent)
 				        	channels_df['psp_good_quality_percent'] = self.truncate_float_decimal(psp_good_percent)
 
