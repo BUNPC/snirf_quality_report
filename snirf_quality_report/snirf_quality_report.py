@@ -71,7 +71,7 @@ class snirf_quality_report():
 	        h_trans_bandwidth = 0.3
 
 	    _, scores, times = scalp_coupling_index_windowed(
-	        raw, time_window=60, h_freq=h_freq, h_trans_bandwidth=h_trans_bandwidth)
+	        raw, time_window=5, h_freq=h_freq, h_trans_bandwidth=h_trans_bandwidth)
 	    fig = plot_timechannel_quality_metric(raw, scores, times,
 	                                          threshold=threshold,
 	                                          title="Scalp Coupling Index "
@@ -80,7 +80,7 @@ class snirf_quality_report():
 	    report.add_figure(fig=fig, title="SCI Windowed", caption=msg)
 	    # plt.close()
 
-	    return raw, report
+	    return raw, report, scores
 
 	def summarise_pp(self, raw, report, threshold=0.8):
 	#     logger.debug("    Creating peak power summary")
@@ -94,7 +94,7 @@ class snirf_quality_report():
 	        h_trans_bandwidth = 0.3
 
 	    _, scores, times = peak_power(
-	        raw, time_window=10, h_freq=h_freq, h_trans_bandwidth=h_trans_bandwidth)
+	        raw, time_window=5, h_freq=h_freq, h_trans_bandwidth=h_trans_bandwidth)
 	    fig = plot_timechannel_quality_metric(raw, scores, times,
 	                                          threshold=threshold,
 	                                          title="Peak Power "
@@ -103,7 +103,7 @@ class snirf_quality_report():
 	    report.add_figure(fig=fig, title="Peak Power", caption=msg)
 	    # plt.close()
 
-	    return raw, report
+	    return raw, report, scores
 
 	def summarise_sci(self, raw, report, threshold=0.8):
 	#     logger.debug("    Creating SCI summary")
@@ -154,6 +154,12 @@ class snirf_quality_report():
 
 		return return_idx
 
+	def truncate_float_decimal(self, list_array):
+		for i in range(len(list_array)):
+			list_array[i] = float(f'{list_array[i]:.3f}')
+
+		return list_array
+
 	def run_report(self, snirf_path=None, path_to_save_report=None, filename_to_save=None):
 
 		if snirf_path is None:
@@ -165,8 +171,8 @@ class snirf_quality_report():
 		# raw, report = self.summarise_triggers(snirf_intensity, report)
 		raw = optical_density(snirf_intensity)
 		# raw, report = self.summarise_odpsd(raw, report)
-		raw, report = self.summarise_sci_window(raw, report, threshold=0.6)
-		raw, report = self.summarise_pp(raw, report, threshold=0.1)
+		raw, report, sci_dist = self.summarise_sci_window(raw, report, threshold=0.6)
+		raw, report, psp_dist = self.summarise_pp(raw, report, threshold=0.1)
 		raw, report, sci = self.summarise_sci(raw, report, threshold=0.6)
 		raw, report = self.summarise_montage(raw, report)
 		if path_to_save_report:
@@ -208,9 +214,28 @@ class snirf_quality_report():
 				        if channels_df.shape[0] >= len(raw.ch_names):
 				        	sci = sci.tolist()
 				        	sci.extend(['']*(channels_df.shape[0]-len(raw.ch_names)))
-				        	pp = ['']*channels_df.shape[0]
-				        	channels_df['scalp_coupling_index'] = sci
-				        	channels_df['peak_power'] = pp
+				        	sci_median = (np.median(sci_dist, axis = 1)).tolist()
+				        	sci_median.extend(['']*(channels_df.shape[0]-len(raw.ch_names)))
+				        	psp_median = (np.median(psp_dist, axis = 1)).tolist()
+				        	psp_median.extend(['']*(channels_df.shape[0]-len(raw.ch_names)))
+				        	sci_fifth_percentile = (np.percentile(sci_dist, 5, axis = 1)).tolist()
+				        	sci_fifth_percentile.extend(['']*(channels_df.shape[0]-len(raw.ch_names)))
+				        	psp_fifth_percentile = (np.percentile(psp_dist, 5, axis = 1)).tolist()
+				        	psp_fifth_percentile.extend(['']*(channels_df.shape[0]-len(raw.ch_names)))
+				        	sci_binary = sci_dist >= 0.6
+				        	sci_good_percent = (np.sum(sci_binary, axis=1)/sci_dist.shape[1]).tolist()
+				        	sci_good_percent.extend(['']*(channels_df.shape[0]-len(raw.ch_names)))
+				        	psp_binary = psp_dist >= 0.1
+				        	psp_good_percent = (np.sum(psp_binary, axis=1)/psp_dist.shape[1]).tolist()
+				        	psp_good_percent.extend(['']*(channels_df.shape[0]-len(raw.ch_names)))
+
+				        	channels_df['sci_median'] = self.truncate_float_decimal(sci_median)
+				        	channels_df['psp_median'] = self.truncate_float_decimal(psp_median)
+				        	channels_df['sci_fifth_percentile'] = self.truncate_float_decimal(sci_fifth_percentile)
+				        	channels_df['psp_fifth_percentile'] = self.truncate_float_decimal(psp_fifth_percentile)
+				        	channels_df['sci_good_quality_percent'] = self.truncate_float_decimal(sci_good_percent)
+				        	channels_df['psp_good_quality_percent'] = self.truncate_float_decimal(psp_good_percent)
+
 				        channel_filename = os.path.split(channels_path)[1]
 				        channel_tsv_path_to_save = os.path.join(report_dir,channel_filename)
 				        channels_df.to_csv(channel_tsv_path_to_save, sep="\t", index=False)
