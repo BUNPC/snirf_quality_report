@@ -13,7 +13,7 @@ import numpy as np
 from itertools import compress
 import matplotlib.pyplot as plt
 
-from mne.preprocessing.nirs import optical_density
+from mne.preprocessing.nirs import optical_density,  _validate_nirs_info
 from mne_nirs.preprocessing import peak_power, scalp_coupling_index_windowed
 from mne_nirs.visualisation import plot_timechannel_quality_metric
 
@@ -170,6 +170,8 @@ class snirf_quality_report():
 		raw, report = self.plot_raw(snirf_intensity, report)
 		# raw, report = self.summarise_triggers(snirf_intensity, report)
 		raw = optical_density(snirf_intensity)
+		picks = _validate_nirs_info(raw.info, fnirs='od', which='Scalp coupling index')
+		raw =  raw.copy().pick(picks).load_data()
 		# raw, report = self.summarise_odpsd(raw, report)
 		raw, report, sci_dist = self.summarise_sci_window(raw, report, threshold=0.6)
 		raw, report, psp_dist = self.summarise_pp(raw, report, threshold=0.1)
@@ -184,6 +186,22 @@ class snirf_quality_report():
 					    path_to_save_report, 'quality_report.html')
 				report.save(filename_and_path, overwrite=True, open_browser=False)
 		else:
+            # return_idx = is_valid_bids_path_for_snirf_file(path_to_snirf)
+            # print(return_idx)
+            # if return_idx != 0:
+            #     norm_path = os.path.normpath(path_to_snirf)
+            #     all_dirs = norm_path.split(os.sep)
+            #     if all_dirs[return_idx+1].startswith('ses-'):
+            #         report_dir = os.path.join(
+            #             *all_dirs[:return_idx], 'derivatives', all_dirs[return_idx], all_dirs[return_idx+1])
+            #     else:
+            #         report_dir = os.path.join(
+            #             *all_dirs[:return_idx], 'derivatives', all_dirs[return_idx])
+                    
+            #     print(report_dir)
+                    
+            #     if not os.path.isdir(report_dir):
+            #         os.makedirs(report_dir)
 			return_idx = self.is_valid_bids_path_for_snirf_file(snirf_path)
 			if return_idx != 0:
 				norm_path = os.path.normpath(snirf_path)
@@ -195,8 +213,8 @@ class snirf_quality_report():
 					report_dir = os.path.join(
 					    *all_dirs[:return_idx], 'derivatives', all_dirs[return_idx], 'report')
 
-				report_dir = Path('/'+report_dir)
-
+				# report_dir = Path('/'+report_dir)
+				print(report_dir)
 				if not os.path.isdir(report_dir):
 					os.makedirs(report_dir)
 
